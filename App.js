@@ -13,15 +13,29 @@ export default function App() {
       url: `http://dataservice.accuweather.com/locations/v1/cities/search?apikey=dxJMuUjS5LubMklps4i7Kq9cp7baULmh&q=${text}`,
     })
       .then((response) => {
-        console.log(response.data[0].Key);
+        setKey(response.data[0].Key);
       })
       .catch(function (error) {
         console.log("error", error);
       });
   };
 
+  const chanceRain = (key) => {
+    axios({
+      method: "get",
+      url: `http://dataservice.accuweather.com/forecasts/v1/hourly/1hour/${key}?apikey=dxJMuUjS5LubMklps4i7Kq9cp7baULmh&details=true&metric=true`,
+    })
+      .then((response) => {
+        console.log(response.data[2]);
+      })
+      .catch(function (error) {
+        console.log("Error");
+      });
+  };
+
   useEffect(() => {
     locationKey(text);
+    chanceRain(key);
   });
   return (
     <View style={styles.container}>
@@ -31,8 +45,7 @@ export default function App() {
         //onChangeText={(newText) => setText(newText)}
         onSubmitEditing={(value) => setText(value.nativeEvent.text)}
       />
-      <Button title="Get key" onPress={() => locationKey()} />
-      <Text>My city key is is</Text>
+      <Text>My city key is is {key}</Text>
       <StatusBar style="auto" />
     </View>
   );
